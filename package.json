@@ -1,0 +1,22 @@
+{
+  "name": "tlf-log",
+  "version": "0.0.1",
+  "description": "A small logging library",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thislooksfun/tlf-log.git"
+  },
+  "keywords": [
+    "logging"
+  ],
+  "author": "thislooksfun",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thislooksfun/tlf-log/issues"
+  },
+  "homepage": "https://github.com/thislooksfun/tlf-log#readme"
+}
