@@ -14,7 +14,7 @@
     "logging"
   ],
   "author": "thislooksfun",
-  "license": "ISC",
+  "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/thislooksfun/tlf-log/issues"
   },
