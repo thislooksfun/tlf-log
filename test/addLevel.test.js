@@ -63,6 +63,15 @@ describe("log._setLevel", function() {
     expect(ftl.calls[0].args).to.deep.equal(["Can't add log level '_invalid', name must not start with '_'."]);
   });
   
+  it("should error trying to add 'silent'", function() {
+    var beforeNameLen = l.names().length;
+    expect(() => log._addLevel("silent")).to.throw("process.exit : 1");
+    expect(l.names().length).to.equal(beforeNameLen);
+    
+    expect(ftl.callCount).to.equal(1);
+    expect(ftl.calls[0].args).to.deep.equal(["Can't add log level, 'silent' is reserved."]);
+  });
+  
   it("should error on adding a duplicate level", function() {
     var beforeNameLen = l.names().length;
     expect(() => log._addLevel("info")).to.throw("process.exit : 1");
