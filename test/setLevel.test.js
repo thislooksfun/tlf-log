@@ -83,11 +83,11 @@ describe("log._setLevel", function() {
     expect(l.level).to.equal(before);
     
     expect(ftl.callCount).to.equal(5);
-    expect(ftl.calls[0].args).to.deep.equal(["log._setLog must be called with a string."]);
-    expect(ftl.calls[1].args).to.deep.equal(["log._setLog must be called with a string."]);
-    expect(ftl.calls[2].args).to.deep.equal(["log._setLog must be called with a string."]);
-    expect(ftl.calls[3].args).to.deep.equal(["log._setLog must be called with a string."]);
-    expect(ftl.calls[4].args).to.deep.equal(["log._setLog must be called with a string."]);
+    expect(ftl.calls[0].args).to.deep.equal(["log._setLevel must be called with a string."]);
+    expect(ftl.calls[1].args).to.deep.equal(["log._setLevel must be called with a string."]);
+    expect(ftl.calls[2].args).to.deep.equal(["log._setLevel must be called with a string."]);
+    expect(ftl.calls[3].args).to.deep.equal(["log._setLevel must be called with a string."]);
+    expect(ftl.calls[4].args).to.deep.equal(["log._setLevel must be called with a string."]);
   });
   
 });
