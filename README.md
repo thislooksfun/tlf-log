@@ -9,3 +9,31 @@ tlf-log
 [![Coveralls](https://img.shields.io/coveralls/github/thislooksfun/tlf-log.svg?style=flat-square)](https://coveralls.io/github/thislooksfun/tlf-log?branch=master)  
 [![Dependency status](https://img.shields.io/david/thislooksfun/tlf-log.svg?style=flat-square)](https://david-dm.org/thislooksfun/tlf-log)
 [![DevDependency status](https://img.shields.io/david/dev/thislooksfun/tlf-log.svg?style=flat-square)](https://david-dm.org/thislooksfun/tlf-log#info=devDependencies)
+
+A simple module for easy logging
+
+
+## Installation
+
+```
+npm i -S tlf-log
+```
+
+
+## Typical Usage
+
+```javascript
+const log = require("tlf-log");
+log.trace("Starting up!");
+```
+
+
+## Documentation
+
+| Function                        | Description                                                               |
+|---------------------------------|---------------------------------------------------------------------------|
+| `log.<level>(msgs)`             | Logs the given messages at the specified level.                           |
+| `log._setLevel(<lvl>)`          | Sets the minimum level to log -- all lower levels will be ignored. Can also be set to 'silent' to silence all but fatal messages. |
+| `log._addLevel(<name>, <opts>)` | Adds a new log level. Valid options are "before", "after" and "afterLog". |
+
+
