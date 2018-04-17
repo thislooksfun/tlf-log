@@ -8,6 +8,7 @@
     "test": "nyc mocha $(find test -name '*.test.js')",
     "check_coverage": "nyc check-coverage --lines 100 --functions 100 --branches 100 --per-file",
     "http_coverage": "nyc report --reporter=html",
+    "snyk": "snyk test",
     "upload_coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
   "repository": {
@@ -31,7 +32,8 @@
     "mocha": "^5.0.4",
     "nyc": "^11.6.0",
     "rewire": "^3.0.2",
-    "simple-mock": "^0.8.0"
+    "simple-mock": "^0.8.0",
+    "snyk": "^1.71.0"
   },
   "dependencies": {}
 }
