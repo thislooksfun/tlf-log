@@ -5,6 +5,15 @@ const util = require("util");
 // Local imports
 const l = require("./lib/levels");
 
+var globalPrefixSections = [];
+var globalPrefix = "";
+function buildPrefix() {
+  globalPrefix = "";
+  for (let sect of globalPrefixSections) {
+    globalPrefix += sect;
+  }
+}
+
 // The current log level (Can never be set < -1, i.e., it will always print FATAL messages)
 function _log(level, prefix, afterLog, ...messages) {
   // Only log if the level is <= the log level
@@ -12,7 +21,10 @@ function _log(level, prefix, afterLog, ...messages) {
   
   var msgs = [];
   for (var m of messages) {
-    msgs.push(format(m).replace(/\n/g, "\n    >>> "));
+    msgs.push(format(m).replace(/\n/g, "\n    >>> " + globalPrefix));
+  }
+  if (msgs.length > 0) {
+    msgs[0] = globalPrefix + msgs[0];
   }
   // eslint-disable-next-line no-console
   console.log(prefix, ...msgs);
@@ -55,6 +67,12 @@ function generate() {
   // Set meta info
   log._setLevel = l.set.bind(l, log);
   log._addLevel = l.add.bind(l, log, generate);
+  
+  // Add indentation
+  log._indent = function() { globalPrefixSections.push("  "); buildPrefix(); };
+  log._prefix = function(p) { globalPrefixSections.push(p); buildPrefix(); };
+  log._deprefix = function() { globalPrefixSections.pop(); buildPrefix(); };
+  log._deindent = log._deprefix;
 }
 
 // Generate the first set
