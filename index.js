@@ -68,10 +68,12 @@ function generate() {
   log._setLevel = l.set.bind(l, log);
   log._addLevel = l.add.bind(l, log, generate);
   
-  // Add indentation
-  log._indent = function() { globalPrefixSections.push("  "); buildPrefix(); };
+  // Add prefixes
   log._prefix = function(p) { globalPrefixSections.push(p); buildPrefix(); };
   log._deprefix = function() { globalPrefixSections.pop(); buildPrefix(); };
+  
+  // Add indentation
+  log._indent = log._prefix.bind(null, "  ");
   log._deindent = log._deprefix;
 }
 
