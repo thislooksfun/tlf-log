@@ -8,8 +8,9 @@ node_js:
   - 6
 script:
   - npm run lint
-  - npm run snyk
+  - npm run snyk_test
   - npm test
   - npm run check_coverage
 after_success:
   - npm run upload_coverage
+  - npm run snyk_monitor
