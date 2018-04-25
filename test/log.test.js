@@ -13,6 +13,7 @@ describe("log", function() {
   var prcssExt;
   beforeEach(function() {
     log._setLevel("debug");
+    log.error(""); // force it to print something.
     
     stdWrite = simple.spy();
     log._stream = {write: stdWrite};
@@ -110,6 +111,26 @@ describe("log", function() {
           log[lvl + "_"](["hello", "world"], [{a: "b"}, {c: "d"}]);
           expect(stdWrite.callCount).to.equal(1);
           expect(stdWrite.calls[0].args).to.deep.equal([`[${lvl.toUpperCase()}]${padding} hello,world { a: 'b' },{ c: 'd' }`]);
+        });
+        
+        it("should correctly concat multiple calls", function() {
+          log[lvl + "_"]("first");
+          log[lvl + "_"]("second");
+          expect(stdWrite.callCount).to.equal(2);
+          expect(stdWrite.calls[0].args).to.deep.equal([`[${lvl.toUpperCase()}]${padding} first`]);
+          expect(stdWrite.calls[1].args).to.deep.equal(["second"]);
+        });
+        
+        it("should correctly concat multiple calls interlaced with prints", function() {
+          log[lvl + "_"]("first");
+          log[lvl]("second");
+          log[lvl + "_"]("third");
+          log[lvl + "_"]("fourth");
+          expect(stdWrite.callCount).to.equal(4);
+          expect(stdWrite.calls[0].args).to.deep.equal([`[${lvl.toUpperCase()}]${padding} first`]);
+          expect(stdWrite.calls[1].args).to.deep.equal(["second\n"]);
+          expect(stdWrite.calls[2].args).to.deep.equal([`[${lvl.toUpperCase()}]${padding} third`]);
+          expect(stdWrite.calls[3].args).to.deep.equal(["fourth"]);
         });
       });
     })(lvl);

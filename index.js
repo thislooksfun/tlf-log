@@ -14,7 +14,7 @@ function buildPrefix() {
   }
 }
 
-// The current log level (Can never be set < -1, i.e., it will always print FATAL messages)
+var lastPrintedNewline = true;
 function _log(level, prefix, afterLog, printNewLine, ...messages) {
   // Only log if the level is <= the log level
   if (level > l.level) return;
@@ -23,14 +23,19 @@ function _log(level, prefix, afterLog, printNewLine, ...messages) {
   for (var m of messages) {
     msgs.push(format(m).replace(/\n/g, "\n    >>> " + globalPrefix));
   }
-  if (msgs.length > 0) {
-    msgs[0] = globalPrefix + msgs[0];
+  
+  if (lastPrintedNewline) {
+    if (msgs.length > 0) {
+      msgs[0] = globalPrefix + msgs[0];
+    }
+    
+    msgs.unshift(prefix);
   }
   
-  let str = util.format(prefix, ...msgs);
+  let str = util.format(...msgs);
   this._stream.write(str + (printNewLine ? "\n" : ""));
-  // eslint-disable-next-line no-console
-  // console.log(prefix, ...msgs);
+  
+  lastPrintedNewline = printNewLine;
   
   // Call after log function, if it exists
   afterLog && afterLog();
