@@ -20,7 +20,7 @@ describe("log._setLevel", function() {
   
   beforeEach(function() {
     // Clean up
-    log.__set__("console", { log: function() {} });
+    log._stream = { write: function() {} };
     
     ftl = simple.mock(log, "fatal");
     trce = simple.mock(log, "trace");
@@ -42,8 +42,8 @@ describe("log._setLevel", function() {
   });
   
   it("should only print if the level is lower", function() {
-    let cnslLg = simple.spy();
-    log.__set__("console", {log: cnslLg});
+    let stdWrite = simple.spy();
+    log._stream = {write: stdWrite};
     log._setLevel("info");
     
     log.debug("dbg");
@@ -52,10 +52,10 @@ describe("log._setLevel", function() {
     log.warn("wrn");
     expect(() => log.fatal("ftl")).to.throw("process.exit : 1");
     
-    expect(cnslLg.callCount).to.equal(3);
-    expect(cnslLg.calls[0].args).to.deep.equal(["[INFO] ", "inf"]);
-    expect(cnslLg.calls[1].args).to.deep.equal(["[WARN] ", "wrn"]);
-    expect(cnslLg.calls[2].args).to.deep.equal(["[FATAL]", "ftl"]);
+    expect(stdWrite.callCount).to.equal(3);
+    expect(stdWrite.calls[0].args).to.deep.equal(["[INFO]  inf\n"]);
+    expect(stdWrite.calls[1].args).to.deep.equal(["[WARN]  wrn\n"]);
+    expect(stdWrite.calls[2].args).to.deep.equal(["[FATAL] ftl\n"]);
   });
   
   it("should set l.level to -1 on 'silent'", function() {

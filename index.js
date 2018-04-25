@@ -15,7 +15,7 @@ function buildPrefix() {
 }
 
 // The current log level (Can never be set < -1, i.e., it will always print FATAL messages)
-function _log(level, prefix, afterLog, ...messages) {
+function _log(level, prefix, afterLog, printNewLine, ...messages) {
   // Only log if the level is <= the log level
   if (level > l.level) return;
   
@@ -26,8 +26,11 @@ function _log(level, prefix, afterLog, ...messages) {
   if (msgs.length > 0) {
     msgs[0] = globalPrefix + msgs[0];
   }
+  
+  let str = util.format(prefix, ...msgs);
+  this._stream.write(str + (printNewLine ? "\n" : ""));
   // eslint-disable-next-line no-console
-  console.log(prefix, ...msgs);
+  // console.log(prefix, ...msgs);
   
   // Call after log function, if it exists
   afterLog && afterLog();
@@ -51,17 +54,22 @@ function format(m) {
 
 var log = {};
 function generate() {
+  let _stream = log._stream;
+  
   // Clear the current functions
   for (let key in log) {
     delete log[key];
   }
+  
+  log._stream = _stream;
   
   // Generate log functions
   for (var lvl of l.names()) {
     // Pad it out so all messages are the same distance, regardless of prefix
     let padding = " ".repeat(l.longest - lvl.length);
     // Add the log (bind the 'this' value to null, the 'level' to be i, and the 'prefix' to be the padded prefix)
-    log[lvl] = _log.bind(null, l.list[lvl].level, `[${lvl.toUpperCase()}]${padding}`, l.list[lvl].afterLog);
+    log[lvl] = _log.bind(log, l.list[lvl].level, `[${lvl.toUpperCase()}]${padding}`, l.list[lvl].afterLog, true);
+    log[lvl + "_"] = _log.bind(log, l.list[lvl].level, `[${lvl.toUpperCase()}]${padding}`, l.list[lvl].afterLog, false);
   }
   
   // Set meta info
@@ -79,6 +87,8 @@ function generate() {
 
 // Generate the first set
 generate();
+
+log._stream = process.stdout;
 
 // Export!
 module.exports = log;

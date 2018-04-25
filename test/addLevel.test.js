@@ -7,7 +7,7 @@ delete require.cache[require.resolve("../lib/levels.js")];
 var log = rewire("../index.js");
 var l   = require("../lib/levels.js");
 // Ignore all logging until the spy is set up.
-
+log._stream = { write: function() {} };
 
 describe("log._setLevel", function() {
   var ftl;
@@ -19,7 +19,7 @@ describe("log._setLevel", function() {
   
   beforeEach(function() {
     // Clean up
-    log.__set__("console", { log: function() {} });
+    log._stream = { write: function() {} };
     
     ftl = simple.mock(log, "fatal");
   });
@@ -134,18 +134,18 @@ describe("log._setLevel", function() {
     
     // It shouldn't log if the log level is too high
     log._setLevel("trace");
-    var cnslLg = simple.mock();
-    log.__set__("console", { log: cnslLg });
+    let stdWrite = simple.spy();
+    log._stream = {write: stdWrite};
     expect(() => log.after("aftr")).to.not.throw();
-    expect(cnslLg.callCount).to.equal(0);
+    expect(stdWrite.callCount).to.equal(0);
     
     // It shouldn't log if the log level is low enough
     log._setLevel("after");
-    cnslLg = simple.mock();
-    log.__set__("console", { log: cnslLg });
+    stdWrite = simple.spy();
+    log._stream = {write: stdWrite};
     expect(() => log.after("aftr")).to.not.throw();
-    expect(cnslLg.callCount).to.equal(1);
-    expect(cnslLg.calls[0].args).to.deep.equal(["[AFTER]", "aftr"]);
+    expect(stdWrite.callCount).to.equal(1);
+    expect(stdWrite.calls[0].args).to.deep.equal(["[AFTER] aftr\n"]);
   });
   
   it("Should insert properly if 'before' is set correctly", function() {
@@ -156,18 +156,18 @@ describe("log._setLevel", function() {
     
     // It should log
     log._setLevel("before");
-    cnslLg = simple.mock();
-    log.__set__("console", { log: cnslLg });
+    let stdWrite = simple.spy();
+    log._stream = {write: stdWrite};
     expect(() => log.before("bfr")).to.not.throw();
-    expect(cnslLg.callCount).to.equal(1);
-    expect(cnslLg.calls[0].args).to.deep.equal(["[BEFORE]", "bfr"]);
+    expect(stdWrite.callCount).to.equal(1);
+    expect(stdWrite.calls[0].args).to.deep.equal(["[BEFORE] bfr\n"]);
     
     // ... but it shouldn't log the 'after' level
     log._setLevel("before");
-    var cnslLg = simple.mock();
-    log.__set__("console", { log: cnslLg });
+    stdWrite = simple.spy();
+    log._stream = {write: stdWrite};
     expect(() => log.trace("trce")).to.not.throw();
-    expect(cnslLg.callCount).to.equal(0);
+    expect(stdWrite.callCount).to.equal(0);
   });
   
   it("Should insert before 'debug' if 'before' not set", function() {
@@ -178,18 +178,18 @@ describe("log._setLevel", function() {
     
     // It should log
     log._setLevel("notset");
-    var cnslLg = simple.mock();
-    log.__set__("console", { log: cnslLg });
+    let stdWrite = simple.spy();
+    log._stream = {write: stdWrite};
     expect(() => log.notset("ntst")).to.not.throw();
-    expect(cnslLg.callCount).to.equal(1);
-    expect(cnslLg.calls[0].args).to.deep.equal(["[NOTSET]", "ntst"]);
+    expect(stdWrite.callCount).to.equal(1);
+    expect(stdWrite.calls[0].args).to.deep.equal(["[NOTSET] ntst\n"]);
     
     // ... but it shouldn't log 'debug'
     log._setLevel("notset");
-    cnslLg = simple.mock();
-    log.__set__("console", { log: cnslLg });
+    stdWrite = simple.spy();
+    log._stream = {write: stdWrite};
     expect(() => log.debug("dbg")).to.not.throw();
-    expect(cnslLg.callCount).to.equal(0);
+    expect(stdWrite.callCount).to.equal(0);
   });
   
   it("should call 'afterLog' if set", function() {

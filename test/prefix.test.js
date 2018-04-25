@@ -6,15 +6,15 @@ delete require.cache[require.resolve("../lib/levels.js")];
 
 var log = rewire("../index.js");
 // Ignore all logging until the spy is set up.
-log.__set__("console", {log: function() {}});
+log._stream = { write: function() {} };
 
 describe("log._prefix", function() {
-  var cnslLg;
+  var stdWrite;
   beforeEach(function() {
     log._setLevel("debug");
     
-    cnslLg = simple.spy();
-    log.__set__("console", {log: cnslLg});
+    stdWrite = simple.spy();
+    log._stream = {write: stdWrite};
   });
   
   afterEach(function() {
@@ -26,8 +26,8 @@ describe("log._prefix", function() {
     log.info("inf");
     log._deprefix();
     
-    expect(cnslLg.callCount).to.equal(1);
-    expect(cnslLg.calls[0].args).to.deep.equal(["[INFO] ", "> inf"]);
+    expect(stdWrite.callCount).to.equal(1);
+    expect(stdWrite.calls[0].args).to.deep.equal(["[INFO]  > inf\n"]);
   });
   
   it("should properly stack prefixes", function() {
@@ -37,8 +37,8 @@ describe("log._prefix", function() {
     log._deprefix();
     log._deprefix();
     
-    expect(cnslLg.callCount).to.equal(1);
-    expect(cnslLg.calls[0].args).to.deep.equal(["[INFO] ", "1> 2> inf"]);
+    expect(stdWrite.callCount).to.equal(1);
+    expect(stdWrite.calls[0].args).to.deep.equal(["[INFO]  1> 2> inf\n"]);
   });
   
   it("should properly remove prefixes", function() {
@@ -50,8 +50,8 @@ describe("log._prefix", function() {
     log._deprefix();
     log._deprefix();
     
-    expect(cnslLg.callCount).to.equal(1);
-    expect(cnslLg.calls[0].args).to.deep.equal(["[INFO] ", "1> 2> inf"]);
+    expect(stdWrite.callCount).to.equal(1);
+    expect(stdWrite.calls[0].args).to.deep.equal(["[INFO]  1> 2> inf\n"]);
   });
   
   it("should prefix multiple lines", function() {
@@ -59,7 +59,7 @@ describe("log._prefix", function() {
     log.info("inf\nand again");
     log._deprefix();
     
-    expect(cnslLg.callCount).to.equal(1);
-    expect(cnslLg.calls[0].args).to.deep.equal(["[INFO] ", "> inf\n    >>> > and again"]);
+    expect(stdWrite.callCount).to.equal(1);
+    expect(stdWrite.calls[0].args).to.deep.equal(["[INFO]  > inf\n    >>> > and again\n"]);
   });
 });
