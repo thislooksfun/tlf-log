@@ -27,7 +27,7 @@
   "homepage": "https://github.com/thislooksfun/tlf-log#readme",
   "devDependencies": {
     "chai": "^4.2.0",
-    "codecov": "^3.0.0",
+    "codecov": "^3.6.1",
     "eslint": "^4.19.0",
     "fs-extra": "^5.0.0",
     "mocha": "^5.0.4",
