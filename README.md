@@ -32,13 +32,13 @@ log.trace("Starting up!");
 
 | Function                        | Description                                                                |
 |---------------------------------|----------------------------------------------------------------------------|
-| `log.<level>(msgs)`             | Logs the given messages at the specified level.                            |
-| `log.<level>_(msgs)`            | Logs the given messages at the specified level without printing a newline. |
+| `log.<level>(...msgs)`          | Logs the given messages at the specified level.                            |
+| `log.<level>_(...msgs)`         | Logs the given messages at the specified level without printing a newline. |
 | `log._setLevel(<lvl>)`          | Sets the minimum level to log -- all lower levels will be ignored. Can also be set to 'silent' to silence all but fatal messages. |
 | `log._addLevel(<name>, <opts>)` | Adds a new log level. Valid options are "before", "after" and "afterLog".  |
 | `log._indent()`                 | Indents the next messages by 2 spaces.                                     |
 | `log._deindent()`               | Deindents the next messages by 2 spaces.                                   |
 | `log._prefix(<name>)`           | Adds a prefix to the next messages.                                        |
-| `log._deprefix(<name>)`         | Removes the most recent prefix.                                            |
+| `log._deprefix()`               | Removes the most recent prefix.                                            |
 
 
